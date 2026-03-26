@@ -1,4 +1,4 @@
-# Credentials 
+# Credentials — JAMAIS sur GitHub
 .env
 *.key
 credentials.json
@@ -13,10 +13,16 @@ __pycache__/
 # Mac
 .DS_Store
 
-# Airflow
+# Airflow — tous les logs et config générés
+logs/
+config/
 airflow/logs/
 
 # dbt
 dbt/target/
-dbt/dbt_packages/logs/
-config/
+dbt/dbt_packages/
+
+# dbt projet généré
+electricity_co2/target/
+electricity_co2/dbt_packages/
+electricity_co2/logs/

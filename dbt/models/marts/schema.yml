@@ -28,3 +28,30 @@ models:
         description: "Consommation nationale en MW"
         data_tests:
           - not_null
+
+  - name: mart_patterns_co2
+    description: "Agrégats CO2 par heure x saison x jour — alimente la heatmap Power BI"
+    columns:
+      - name: heure
+        description: "Heure de la journée (0-23)"
+        data_tests:
+          - not_null
+
+      - name: saison
+        description: "Saison météo française"
+        data_tests:
+          - not_null
+          - accepted_values:
+              config:
+                severity: error
+              values: ['Hiver', 'Printemps', 'Été', 'Automne']
+
+      - name: avg_taux_co2
+        description: "CO2 moyen en gCO2/kWh pour cette heure x saison"
+        data_tests:
+          - not_null
+
+      - name: nb_observations
+        description: "Nombre de mesures utilisées pour calculer la moyenne"
+        data_tests:
+          - not_null

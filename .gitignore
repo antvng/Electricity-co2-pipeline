@@ -25,4 +25,4 @@ dbt/dbt_packages/
 # dbt projet généré
 electricity_co2/target/
 electricity_co2/dbt_packages/
-electricity_co2/logs/
+electricity_co2/logs/dbt/.user.yml

@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_national_enrichi
+    description: "Données nationales enrichies avec dimensions temporelles et KPIs CO2"
+    columns:
+      - name: date_heure
+        description: "Horodatage de la mesure"
+        data_tests:
+          - not_null
+          - unique
+
+      - name: saison
+        data_tests:
+          - not_null
+          - accepted_values:
+              config:
+                severity: error
+              values: ['Hiver', 'Printemps', 'Été', 'Automne']
+
+      - name: indice_vert
+        data_tests:
+          - not_null
+          - accepted_values:
+              config:
+                severity: error
+              values: ['Vert', 'Orange', 'Rouge']
+
+      - name: part_bas_carbone
+        description: "Part bas-carbone entre 0 et 1"
+        data_tests:
+          - not_null

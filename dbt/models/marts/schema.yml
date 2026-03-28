@@ -55,3 +55,26 @@ models:
         description: "Nombre de mesures utilisées pour calculer la moyenne"
         data_tests:
           - not_null
+
+  - name: mart_heures_vertes
+    description: "Top 3 heures vertes par saison avec gain CO2 vs heure de pointe"
+    columns:
+      - name: saison
+        description: "Saison météo française"
+        data_tests:
+          - not_null
+
+      - name: rang
+        description: "Rang 1 = heure la plus verte de la saison"
+        data_tests:
+          - not_null
+
+      - name: heure_optimale
+        description: "Heure de la journée recommandée (0-23)"
+        data_tests:
+          - not_null
+
+      - name: gain_vs_pointe_pct
+        description: "Gain en % vs heure de pointe"
+        data_tests:
+          - not_null

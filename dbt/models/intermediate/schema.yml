@@ -1,5 +1,3 @@
-version: 2
-
 models:
   - name: int_national_enrichi
     description: "Données nationales enrichies avec dimensions temporelles et KPIs CO2"
@@ -30,3 +28,30 @@ models:
         description: "Part bas-carbone entre 0 et 1"
         data_tests:
           - not_null
+
+  - name: int_regional_enrichi
+    description: "Données régionales enrichies avec dimensions temporelles et KPIs"
+    columns:
+      - name: date_heure
+        description: "Horodatage de la mesure"
+        data_tests:
+          - not_null
+
+      - name: libelle_region
+        description: "Nom de la région"
+        data_tests:
+          - not_null
+
+      - name: autosuffisance
+        description: "Ratio production/consommation — >1 = exportatrice"
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: part_bas_carbone
+        description: "Part bas-carbone entre 0 et 1"
+        data_tests:
+          - not_null:
+              config:
+                severity: warn

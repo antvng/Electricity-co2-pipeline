@@ -78,3 +78,26 @@ models:
         description: "Gain en % vs heure de pointe"
         data_tests:
           - not_null
+
+      - name: mart_regional_mensuel
+        description: "Agrégat mensuel par région — alimente la carte choroplèthe Power BI"
+        columns:
+      - name: annee
+        description: "Année"
+        data_tests:
+          - not_null
+
+      - name: mois
+        description: "Mois (1-12)"
+        data_tests:
+          - not_null
+
+      - name: libelle_region
+        description: "Nom de la région française"
+        data_tests:
+          - not_null
+
+      - name: tco_renouvelables_moyen
+        description: "TCO renouvelables composite moyen sur le mois"
+        data_tests:
+          - not_null

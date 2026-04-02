@@ -1,4 +1,4 @@
-version: 2
+
 
 models:
   - name: stg_eco2mix_national
@@ -17,5 +17,23 @@ models:
 
       - name: taux_co2
         description: "Taux de CO2 du mix électrique en gCO2/kWh"
+        data_tests:
+          - not_null
+
+  - name: stg_eco2mix_regional
+    description: "Données régionales éco2mix nettoyées et typées (Bronze → Silver)"
+    columns:
+      - name: date_heure
+        description: "Horodatage de la mesure"
+        data_tests:
+          - not_null
+
+      - name: libelle_region
+        description: "Nom de la région française"
+        data_tests:
+          - not_null
+
+      - name: consommation_mw
+        description: "Consommation électrique régionale en MW"
         data_tests:
           - not_null

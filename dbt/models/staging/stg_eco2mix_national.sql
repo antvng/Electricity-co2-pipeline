@@ -1,14 +1,23 @@
 -- Nettoyage et typage des données nationales brutes
+-- Sources : RAW_NATIONAL_HISTORIQUE (2012-2025) + RAW_NATIONAL_TEMPS_REEL (2026+)
 -- ELECTRICITY_RAW.ECO2MIX.RAW_NATIONAL_HISTORIQUE
+-- ELECTRICITY_RAW.ECO2MIX.RAW_NATIONAL_TEMPS_REEL
 
-with source as (
+with historique as (
 
     select *
     from ELECTRICITY_RAW.ECO2MIX.RAW_NATIONAL_HISTORIQUE
 
 ),
 
-cleaned as (
+temps_reel as (
+
+    select *
+    from ELECTRICITY_RAW.ECO2MIX.RAW_NATIONAL_TEMPS_REEL
+
+),
+
+cleaned_historique as (
 
     select
         -- Horodatage
@@ -42,22 +51,70 @@ cleaned as (
         "taux_co2"::float                           as taux_co2,
 
         -- Métadonnées
-        "_loaded_at"                                as _loaded_at
+        "_loaded_at"::timestamp_ntz                 as _loaded_at
 
-    from source
+    from historique
+
+),
+
+cleaned_temps_reel as (
+
+    select
+        -- Horodatage
+        DATE_HEURE::timestamp                       as date_heure,
+
+        -- Consommation et prévisions (MW)
+        CONSOMMATION::float                         as consommation_mw,
+        PREVISION_J1::float                         as prevision_j1_mw,
+        PREVISION_J::float                          as prevision_j_mw,
+
+        -- Mix de production par filière (MW)
+        NUCLEAIRE::float                            as nucleaire_mw,
+        HYDRAULIQUE::float                          as hydraulique_mw,
+        EOLIEN::float                               as eolien_mw,
+        SOLAIRE::float                              as solaire_mw,
+        GAZ::float                                  as gaz_mw,
+        FIOUL::float                                as fioul_mw,
+        CHARBON::float                              as charbon_mw,
+        BIOENERGIES::float                          as bioenergies_mw,
+        POMPAGE::float                              as pompage_mw,
+        ECH_PHYSIQUES::float                        as ech_physiques_mw,
+
+        -- Échanges commerciaux absents du temps réel → NULL
+        NULL::float                                 as ech_angleterre_mw,
+        NULL::float                                 as ech_espagne_mw,
+        NULL::float                                 as ech_italie_mw,
+        NULL::float                                 as ech_suisse_mw,
+        NULL::float                                 as ech_allemagne_belgique_mw,
+
+        -- KPI central
+        TAUX_CO2::float                             as taux_co2,
+
+        -- Métadonnées
+        _LOADED_AT::timestamp_ntz                   as _loaded_at
+
+    from temps_reel
+
+),
+
+source as (
+
+    select * from cleaned_historique
+    union all
+    select * from cleaned_temps_reel
 
 ),
 
 final as (
 
     select *
-    from cleaned
+    from source
     where date_heure is not null
     and consommation_mw is not null
     and consommation_mw > 0
 
-    -- Dédoublonnage sur les changements d'heure 
-    -- On keep la derniere ligne seulement pour chaque timestamp
+    -- Dédoublonnage sur les changements d'heure
+    -- Si même timestamp dans les deux tables, on garde le plus récemment chargé
     qualify row_number() over (
         partition by date_heure
         order by _loaded_at desc
@@ -65,4 +122,4 @@ final as (
 
 )
 
-select * from final-- trigger CI
+select * from final
